@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Consulta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/atendente">Sistema Médico</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/atendente/pacientes">Pacientes</a>
+            <a class="nav-link" href="/atendente/medicos">Médicos</a>
+            <a class="nav-link" href="/atendente/medicamentos">Medicamentos</a>
+            <a class="nav-link" href="/atendente/consultas">Consultas</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2>Nova Consulta</h2>
+
+    <form th:action="@{/atendente/consultas}" th:object="${consulta}" method="post">
+        <div class="mb-3">
+            <label class="form-label">Paciente:</label>
+            <select class="form-select" th:field="*{pacienteCpf}" required>
+                <option value="">Selecione...</option>
+                <option th:each="p : ${pacientes}" th:value="${p.cpf}" th:text="${p.nome + ' (' + p.cpf + ')'}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Médico:</label>
+            <select class="form-select" th:field="*{medicoCrm}" required>
+                <option value="">Selecione...</option>
+                <option th:each="m : ${medicos}" th:value="${m.crm}" th:text="${m.nome + ' (' + m.especialidade + ')'}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Data/Hora:</label>
+            <input type="text" class="form-control" th:field="*{dataHora}" required placeholder="Ex: 15/07/2026 14:30"/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Data/Hora de Retorno:</label>
+            <input type="text" class="form-control" th:field="*{dataHoraVolta}" placeholder="Ex: 15/08/2026 14:30"/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Observação:</label>
+            <textarea class="form-control" th:field="*{observacao}" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="/atendente/consultas" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+</body>
+</html>
