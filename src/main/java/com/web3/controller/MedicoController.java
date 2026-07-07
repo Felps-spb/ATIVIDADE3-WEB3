@@ -128,7 +128,10 @@ public class MedicoController {
         prontuario.setConsultaCodigo(codigo);
         Prontuario savedProntuario = prontuarioRepository.save(prontuario);
 
-        if (receituarioObservacao != null && !receituarioObservacao.isBlank()) {
+        boolean temMedicamentos = medicamentoCodigo != null && !medicamentoCodigo.isEmpty() && medicamentoCodigo.stream().anyMatch(c -> c != null);
+        boolean temReceituario = (receituarioObservacao != null && !receituarioObservacao.isBlank()) || temMedicamentos;
+
+        if (temReceituario) {
             Receituario receituario = new Receituario();
             receituario.setObservacao(receituarioObservacao);
             receituario.setProntuarioCodigo(savedProntuario.getCodigo());

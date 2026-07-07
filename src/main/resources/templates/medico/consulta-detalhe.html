@@ -4,108 +4,128 @@
     <meta charset="UTF-8">
     <title>Detalhes da Consulta</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+<body class="bg-body-tertiary min-vh-100 d-flex flex-column">
+<nav class="navbar navbar-expand-lg sticky-top" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
     <div class="container">
-        <a class="navbar-brand" href="/medico/home">Sistema Médico</a>
-        <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/medico/home">Consultas Pendentes</a>
-            <a class="nav-link" href="/medico/consultas-realizadas">Consultas Realizadas</a>
-            <a class="nav-link" href="/medico/logout">Sair</a>
+        <a class="navbar-brand text-white fw-bold" href="/medico/home">
+            <i class="bi bi-heart-pulse-fill me-2"></i>Clínica Saúde+
+        </a>
+        <div class="navbar-nav ms-auto d-flex flex-row">
+            <a class="nav-link text-white" href="/medico/home"><i class="bi bi-clock me-1"></i>Pendentes</a>
+            <a class="nav-link text-white" href="/medico/consultas-realizadas"><i class="bi bi-check-all me-1"></i>Realizadas</a>
+            <a class="nav-link text-white" href="/medico/logout" title="Sair"><i class="bi bi-box-arrow-right fs-5"></i></a>
         </div>
     </div>
 </nav>
 
-<div class="container mt-4">
-    <h2>Detalhes da Consulta</h2>
+<div class="container py-4 flex-grow-1">
+    <h4 class="mb-4"><i class="bi bi-journal-medical me-2 text-success"></i>Detalhes da Consulta</h4>
 
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Dados da Consulta</h5>
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #0d6efd;">
+                <div class="card-body">
+                    <h6 class="text-primary mb-3"><i class="bi bi-clipboard2-pulse me-2"></i>Dados da Consulta</h6>
+                    <p class="mb-1"><strong>Código:</strong> <span class="badge bg-secondary" th:text="${consulta.codigo}"></span></p>
+                    <p class="mb-1"><strong>Data/Hora:</strong> <span th:text="${consulta.dataHora}"></span></p>
+                    <p class="mb-1" th:if="${consulta.dataHoraVolta}"><strong>Retorno:</strong> <span th:text="${consulta.dataHoraVolta}"></span></p>
+                    <p class="mb-0"><strong>Observação:</strong> <span th:text="${consulta.observacao} ?: 'Nenhuma'"></span></p>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <p><strong>Código:</strong> <span th:text="${consulta.codigo}"></span></p>
-            <p><strong>Data/Hora:</strong> <span th:text="${consulta.dataHora}"></span></p>
-            <p th:if="${consulta.dataHoraVolta}"><strong>Retorno:</strong> <span th:text="${consulta.dataHoraVolta}"></span></p>
-            <p><strong>Observação:</strong> <span th:text="${consulta.observacao}"></span></p>
-        </div>
-    </div>
-
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">
-            <h5 class="mb-0">Dados do Paciente</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Nome:</strong> <span th:text="${consulta.pacienteNome}"></span></p>
-            <p><strong>CPF:</strong> <span th:text="${consulta.pacienteCpf}"></span></p>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #198754;">
+                <div class="card-body">
+                    <h6 class="text-success mb-3"><i class="bi bi-person-badge me-2"></i>Dados do Paciente</h6>
+                    <p class="mb-1"><strong>Nome:</strong> <span class="fw-medium" th:text="${consulta.pacienteNome}"></span></p>
+                    <p class="mb-0"><strong>CPF:</strong> <code th:text="${consulta.pacienteCpf}"></code></p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div th:if="${temProntuario}">
-        <div class="alert alert-info">
-            Esta consulta já possui um prontuário registrado.
-            <a th:href="@{/medico/prontuario/{codigo}(codigo=${consulta.codigo})}" class="btn btn-sm btn-outline-primary ms-2">Ver Prontuário</a>
+        <div class="alert alert-info alert-dismissible fade show d-flex align-items-center border-0 shadow-sm" role="alert">
+            <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+            <div>
+                <strong>Esta consulta já possui um prontuário registrado.</strong>
+            </div>
+            <a th:href="@{/medico/prontuario/{codigo}(codigo=${consulta.codigo})}" class="btn btn-outline-info btn-sm ms-auto me-2">
+                <i class="bi bi-eye me-1"></i>Ver Prontuário
+            </a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     </div>
 
     <div th:unless="${temProntuario}">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Cadastrar Prontuário</h5>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Cadastrar Prontuário</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form th:action="@{/medico/consulta/{codigo}/prontuario(codigo=${consulta.codigo})}" method="post">
                     <div class="mb-3">
-                        <label class="form-label">Descrição do Prontuário:</label>
-                        <textarea class="form-control" name="descricao" rows="4" required></textarea>
+                        <label class="form-label fw-medium">Descrição do Prontuário</label>
+                        <textarea class="form-control" name="descricao" rows="4" required placeholder="Descreva o atendimento, diagnóstico, queixas do paciente..."></textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Observação do Prontuário:</label>
-                        <input type="text" class="form-control" name="observacao"/>
+                        <label class="form-label fw-medium">Observação do Prontuário</label>
+                        <input type="text" class="form-control" name="observacao" placeholder="Observações complementares (opcional)"/>
                     </div>
 
-                    <hr/>
-                    <h5>Receituário (opcional)</h5>
+                    <hr class="my-4"/>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-circle-sm bg-warning bg-opacity-10 text-warning me-3">
+                            <i class="bi bi-prescription2 fs-4"></i>
+                        </div>
+                        <h5 class="mb-0">Receituário <span class="text-muted small fw-normal">(opcional)</span></h5>
+                    </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Observação do Receituário:</label>
-                        <input type="text" class="form-control" name="receituarioObservacao"/>
+                        <label class="form-label fw-medium">Observação do Receituário</label>
+                        <input type="text" class="form-control" name="receituarioObservacao" placeholder="Instruções gerais da receita (opcional)"/>
                     </div>
 
                     <div id="itens-container">
-                        <div class="item-receita border p-3 mb-2 bg-light">
-                            <h6>Medicamento 1</h6>
-                            <div class="row">
-                                <div class="col-md-4 mb-2">
-                                    <label class="form-label">Medicamento:</label>
-                                    <select class="form-select" name="medicamentoCodigo">
+                        <div class="item-receita border rounded-3 p-3 mb-3 bg-light">
+                            <h6 class="fw-bold text-success mb-3"><i class="bi bi-capsule me-2"></i>Medicamento 1</h6>
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-medium">Medicamento</label>
+                                    <select class="form-select form-select-sm" name="medicamentoCodigo">
                                         <option value="">Selecione...</option>
                                         <option th:each="med : ${medicamentos}" th:value="${med.codigo}" th:text="${med.nome}"></option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <label class="form-label">Dosagem:</label>
-                                    <input type="number" class="form-control" name="medicamentoDosagem" value="0"/>
+                                <div class="col-md-2">
+                                    <label class="form-label small fw-medium">Dosagem</label>
+                                    <input type="number" class="form-control form-control-sm" name="medicamentoDosagem" value="0"/>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <label class="form-label">Intervalo (horas):</label>
-                                    <input type="number" class="form-control" name="medicamentoIntervalo" value="0"/>
+                                <div class="col-md-2">
+                                    <label class="form-label small fw-medium">Intervalo (h)</label>
+                                    <input type="number" class="form-control form-control-sm" name="medicamentoIntervalo" value="0"/>
                                 </div>
-                                <div class="col-md-2 mb-2">
-                                    <label class="form-label">Obs:</label>
-                                    <input type="text" class="form-control" name="medicamentoObservacao"/>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-medium">Observação</label>
+                                    <input type="text" class="form-control form-control-sm" name="medicamentoObservacao" placeholder="Ex: após refeições"/>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <button type="button" class="btn btn-sm btn-outline-secondary mb-3" onclick="adicionarItem()">+ Adicionar Medicamento</button>
+                    <button type="button" class="btn btn-sm btn-outline-success mb-4" onclick="adicionarItem()">
+                        <i class="bi bi-plus-lg me-1"></i>Adicionar Medicamento
+                    </button>
 
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-success">Salvar Prontuário</button>
-                        <a href="/medico/home" class="btn btn-secondary">Voltar</a>
+                    <div class="d-flex gap-2 border-top pt-3">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-lg me-1"></i>Salvar Prontuário
+                        </button>
+                        <a href="/medico/home" class="btn btn-outline-secondary">Voltar</a>
                     </div>
                 </form>
             </div>
@@ -113,29 +133,44 @@
     </div>
 </div>
 
+<footer class="bg-dark text-white text-center py-2 mt-auto">
+    <small>&copy; 2026 Clínica Saúde+</small>
+</footer>
+
+<style>
+.icon-circle-sm {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
 <script th:unless="${temProntuario}">
     let itemCount = 1;
     function adicionarItem() {
         itemCount++;
         const container = document.getElementById('itens-container');
         const div = document.createElement('div');
-        div.className = 'item-receita border p-3 mb-2 bg-light';
-        div.innerHTML = '<h6>Medicamento ' + itemCount + '</h6>' +
-            '<div class="row">' +
-            '<div class="col-md-4 mb-2"><label class="form-label">Medicamento:</label>' +
-            '<select class="form-select" name="medicamentoCodigo">' +
+        div.className = 'item-receita border rounded-3 p-3 mb-3 bg-light';
+        div.innerHTML = '<h6 class="fw-bold text-success mb-3"><i class="bi bi-capsule me-2"></i>Medicamento ' + itemCount + '</h6>' +
+            '<div class="row g-2">' +
+            '<div class="col-md-4"><label class="form-label small fw-medium">Medicamento</label>' +
+            '<select class="form-select form-select-sm" name="medicamentoCodigo">' +
             '<option value="">Selecione...</option>' +
             [...document.querySelectorAll('select[name="medicamentoCodigo"] option')].map(o => '<option value="' + o.value + '">' + o.textContent + '</option>').join('') +
             '</select></div>' +
-            '<div class="col-md-3 mb-2"><label class="form-label">Dosagem:</label>' +
-            '<input type="number" class="form-control" name="medicamentoDosagem" value="0"/></div>' +
-            '<div class="col-md-3 mb-2"><label class="form-label">Intervalo (horas):</label>' +
-            '<input type="number" class="form-control" name="medicamentoIntervalo" value="0"/></div>' +
-            '<div class="col-md-2 mb-2"><label class="form-label">Obs:</label>' +
-            '<input type="text" class="form-control" name="medicamentoObservacao"/></div>' +
+            '<div class="col-md-2"><label class="form-label small fw-medium">Dosagem</label>' +
+            '<input type="number" class="form-control form-control-sm" name="medicamentoDosagem" value="0"/></div>' +
+            '<div class="col-md-2"><label class="form-label small fw-medium">Intervalo (h)</label>' +
+            '<input type="number" class="form-control form-control-sm" name="medicamentoIntervalo" value="0"/></div>' +
+            '<div class="col-md-4"><label class="form-label small fw-medium">Observação</label>' +
+            '<input type="text" class="form-control form-control-sm" name="medicamentoObservacao" placeholder="Ex: após refeições"/></div>' +
             '</div>';
         container.appendChild(div);
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

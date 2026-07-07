@@ -8,6 +8,7 @@ import com.web3.repository.ConsultaRepository;
 import com.web3.repository.MedicamentoRepository;
 import com.web3.repository.MedicoRepository;
 import com.web3.repository.PacienteRepository;
+import com.web3.repository.ProntuarioRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,15 +22,18 @@ public class AtendenteController {
     private final MedicoRepository medicoRepository;
     private final MedicamentoRepository medicamentoRepository;
     private final ConsultaRepository consultaRepository;
+    private final ProntuarioRepository prontuarioRepository;
 
     public AtendenteController(PacienteRepository pacienteRepository,
-                               MedicoRepository medicoRepository,
-                               MedicamentoRepository medicamentoRepository,
-                               ConsultaRepository consultaRepository) {
+                                MedicoRepository medicoRepository,
+                                MedicamentoRepository medicamentoRepository,
+                                ConsultaRepository consultaRepository,
+                                ProntuarioRepository prontuarioRepository) {
         this.pacienteRepository = pacienteRepository;
         this.medicoRepository = medicoRepository;
         this.medicamentoRepository = medicamentoRepository;
         this.consultaRepository = consultaRepository;
+        this.prontuarioRepository = prontuarioRepository;
     }
 
     @GetMapping
@@ -179,6 +183,10 @@ public class AtendenteController {
 
     @GetMapping("/consultas/{codigo}/excluir")
     public String excluirConsulta(@PathVariable int codigo, RedirectAttributes ra) {
+        if (prontuarioRepository.findByConsultaCodigo(codigo).isPresent()) {
+            ra.addFlashAttribute("erro", "Não é possível excluir uma consulta que já possui prontuário!");
+            return "redirect:/atendente/consultas";
+        }
         consultaRepository.deleteById(codigo);
         ra.addFlashAttribute("mensagem", "Consulta excluída com sucesso!");
         return "redirect:/atendente/consultas";
